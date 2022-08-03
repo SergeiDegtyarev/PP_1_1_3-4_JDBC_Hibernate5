@@ -11,12 +11,13 @@ import java.util.logging.Logger;
 
 public class UserDaoJDBCImpl implements UserDao {
     private final static Logger LOGGER = Logger.getLogger(UserDaoJDBCImpl.class.getName());
+    private Connection conn = Util.getConnection();
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable()  {
-        try(Connection conn = Util.getConnection();
+        try(
             Statement stmt = conn.createStatement();
         ) {
             conn.setAutoCommit(false);
@@ -32,12 +33,17 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Таблица в базе данных успешно создана.");
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Ошибка при создании таблицы.");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
     }
 
     public void dropUsersTable() {
-        try(Connection conn = Util.getConnection();
+        try(
             Statement stmt = conn.createStatement();
 
         ) {
@@ -48,14 +54,16 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Таблица из базы данных удалена.");
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Ошибка при удалении таблицы из базы данных.");
-
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try(Connection conn = Util.getConnection();
-            Statement stmt = conn.createStatement();
-        ) {
+        try(Statement stmt = conn.createStatement();) {
             conn.setAutoCommit(false);
             String sql = "INSERT INTO users (name,lastName, age) Values (?,?,?);";
 
@@ -69,6 +77,11 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Пользователь " + name + " добавлен в базу.");
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Ошибка при сохрании пользователя в таблицу.");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
     }
@@ -82,14 +95,18 @@ public class UserDaoJDBCImpl implements UserDao {
             conn.commit();
             System.out.println("Пользователь удален по ID.");
         } catch (SQLException e) {
-            e.printStackTrace();
             LOGGER.log(Level.WARNING, "Ошибка при удалении пользователя.");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     public List<User> getAllUsers() {
         List <User> users = new ArrayList<>();
-        try(Connection conn = Util.getConnection();
+        try(
             Statement stmt = conn.createStatement();)
         {
             conn.setAutoCommit(false);
@@ -107,12 +124,18 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Список всех данных из таблицы: " + users);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Ошибка при получении данных из таблицы.");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return users;
     }
 
     public void cleanUsersTable() {
-        try(Connection conn = Util.getConnection();
+        Connection conn = Util.getConnection();
+        try(
             Statement stmt = conn.createStatement();
         ) {
             conn.setAutoCommit(false);
@@ -122,6 +145,11 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Таблица очищена.");
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Ошибка при очистки таблицы.");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }
