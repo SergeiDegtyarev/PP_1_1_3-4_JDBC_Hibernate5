@@ -15,11 +15,9 @@ public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
 
     }
-
     public void createUsersTable()  {
-        try(
-            Statement stmt = conn.createStatement();
-        ) {
+        try(Statement stmt = conn.createStatement();)
+        {
             conn.setAutoCommit(false);
             String sql = "CREATE TABLE IF NOT EXISTS users" +
                     "(id BIGINT AUTO_INCREMENT, " +
@@ -27,7 +25,6 @@ public class UserDaoJDBCImpl implements UserDao {
                     " lastName VARCHAR(255) NOT NULL, " +
                     " age TINYINT NOT NULL, " +
                     " PRIMARY KEY ( id ))";
-
             stmt.executeUpdate(sql);
             conn.commit();
             System.out.println("Таблица в базе данных успешно создана.");
@@ -39,14 +36,11 @@ public class UserDaoJDBCImpl implements UserDao {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
-
     }
 
     public void dropUsersTable() {
-        try(
-            Statement stmt = conn.createStatement();
-
-        ) {
+        try(Statement stmt = conn.createStatement();)
+        {
             conn.setAutoCommit(false);
             String sql = "DROP TABLE IF EXISTS users";
             stmt.executeUpdate(sql);
