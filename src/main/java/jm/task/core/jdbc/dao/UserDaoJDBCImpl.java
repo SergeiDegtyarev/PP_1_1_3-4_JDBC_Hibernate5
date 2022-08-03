@@ -36,7 +36,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
 
@@ -57,7 +57,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
     }
@@ -80,7 +80,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
 
@@ -99,7 +99,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
     }
@@ -127,7 +127,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
         return users;
@@ -148,7 +148,7 @@ public class UserDaoJDBCImpl implements UserDao {
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
         }
     }
