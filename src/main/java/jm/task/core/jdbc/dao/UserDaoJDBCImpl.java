@@ -11,13 +11,14 @@ import java.util.logging.Logger;
 
 public class UserDaoJDBCImpl implements UserDao {
     private final static Logger LOGGER = Logger.getLogger(UserDaoJDBCImpl.class.getName());
-    private Connection conn = Util.getConnection();
+
     public UserDaoJDBCImpl() {
 
     }
-    public void createUsersTable()  {
-        try(Statement stmt = conn.createStatement();)
-        {
+    public void createUsersTable() {
+        Connection conn = Util.getConnection();
+        try {
+            Statement stmt = conn.createStatement();
             conn.setAutoCommit(false);
             String sql = "CREATE TABLE IF NOT EXISTS users" +
                     "(id BIGINT AUTO_INCREMENT, " +
@@ -35,12 +36,20 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
+            }
         }
     }
 
     public void dropUsersTable() {
-        try(Statement stmt = conn.createStatement();)
+        Connection conn = Util.getConnection();
+        try
         {
+            Statement stmt = conn.createStatement();
             conn.setAutoCommit(false);
             String sql = "DROP TABLE IF EXISTS users";
             stmt.executeUpdate(sql);
@@ -53,18 +62,26 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
+            }
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try(Statement stmt = conn.createStatement();) {
+        Connection conn = Util.getConnection();
+        try {
+            Statement stmt = conn.createStatement();
             conn.setAutoCommit(false);
             String sql = "INSERT INTO users (name,lastName, age) Values (?,?,?);";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
             pstmt.setString(2, lastName);
-            pstmt.setByte(3,age);
+            pstmt.setByte(3, age);
             pstmt.executeUpdate();
             conn.commit();
 
@@ -76,12 +93,19 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
+            }
         }
-
     }
 
+
     public void removeUserById(long id) {
-        try(Connection conn = Util.getConnection(); ) {
+        Connection conn = Util.getConnection();
+        try {
             conn.setAutoCommit(false);
             PreparedStatement  ps = conn.prepareStatement("DELETE FROM users WHERE id = ?");
             ps.setLong(1, id);
@@ -95,14 +119,21 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        }  finally {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
         }
+    }
     }
 
     public List<User> getAllUsers() {
         List <User> users = new ArrayList<>();
-        try(
-            Statement stmt = conn.createStatement();)
+        Connection conn = Util.getConnection();
+        try
         {
+            Statement stmt = conn.createStatement();
             conn.setAutoCommit(false);
             String sql = "SELECT * FROM users";
             ResultSet rs = stmt.executeQuery(sql);
@@ -123,15 +154,20 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        }  finally {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
         }
+    }
         return users;
     }
 
     public void cleanUsersTable() {
         Connection conn = Util.getConnection();
-        try(
+        try {
             Statement stmt = conn.createStatement();
-        ) {
             conn.setAutoCommit(false);
             String sql = "TRUNCATE userbd.users";
             stmt.executeUpdate(sql);
@@ -144,6 +180,12 @@ public class UserDaoJDBCImpl implements UserDao {
             } catch (SQLException ex) {
                 LOGGER.log(Level.WARNING, "Ошибка в вызове метода rollback.");
             }
+        } finally {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "Ошибка при закрытии Connection.");
         }
+    }
     }
 }
